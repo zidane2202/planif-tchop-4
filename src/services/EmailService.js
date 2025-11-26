@@ -6,7 +6,7 @@ import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firesto
 import moment from 'moment';
 import 'moment/locale/fr';
 import * as FileSystem from 'expo-file-system';
-
+import { Platform, Linking } from 'react-native'; // <--- ADD THIS
 moment.locale('fr');
 
 // --- Fonctions de récupération de données (inchangées) ---
