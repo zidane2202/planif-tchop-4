@@ -2,6 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Platform, Button } from 'react-native'; // Import Button
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
+const PALETTE = {
+  CAM_GREEN: '#007A5E',
+  CAM_RED: '#CE1126',
+  CAM_YELLOW: '#FCD116',
+  DARK_GRAY: '#343a40',
+  MEDIUM_GRAY: '#6c757d',
+  LIGHT_BACKGROUND: '#EEF7F4',
+};
+
 function HomeScreen() {
   const navigation = useNavigation(); // Get navigation object
 
@@ -23,7 +32,7 @@ function HomeScreen() {
           <Button
             title="🛒 Voir ma Liste de Courses"
             onPress={() => navigation.navigate('Courses')} // Navigate to the 'Courses' tab
-            color={styles.CAM_GREEN} // Use a theme color
+            color={PALETTE.CAM_GREEN} // Use a theme color
           />
         </View>
 
@@ -39,16 +48,6 @@ function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  // Couleurs du drapeau Camerounais
-  CAM_GREEN: '#007A5E', // Vert foncé
-  CAM_RED: '#CE1126',   // Rouge vif
-  CAM_YELLOW: '#FCD116', // Jaune vif
-
-  // Couleurs neutres ou d'accent pour la lisibilité
-  DARK_GRAY: '#343a40',
-  MEDIUM_GRAY: '#6c757d',
-  LIGHT_BACKGROUND: '#EEF7F4', // Un vert très clair pour le fond, ou blanc cassé
-
   safeArea: {
     flex: 1,
     backgroundColor: '#EEF7F4', // Fond principal doux (vert très clair)

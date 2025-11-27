@@ -8,6 +8,18 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import FamilyForm from '../components/family/FamilyForm';
 import FamilyList from '../components/family/FamilyList';
 
+const PALETTE = {
+  ACCENT_GREEN: '#007A5E',
+  ACCENT_RED: '#CE1126',
+  ACCENT_YELLOW: '#FCD116',
+  BACKGROUND_PRIMARY: '#FFFFFF',
+  SCREEN_BACKGROUND: '#EEF7F4',
+  BORDER_LIGHT: '#E0E0E0',
+  BORDER_MEDIUM: '#C0C0C0',
+  TEXT_PRIMARY: '#333333',
+  TEXT_SECONDARY: '#666666',
+};
+
 function FamilyScreen() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [familyMembers, setFamilyMembers] = useState([]);
@@ -28,7 +40,7 @@ function FamilyScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <View style={styles.headerContainer}>
-          <FontAwesome name="users" size={32} color={styles.ACCENT_RED} />
+          <FontAwesome name="users" size={32} color={PALETTE.ACCENT_RED} />
           <Text style={styles.title}>Gestion de la Famille</Text>
         </View>
 
@@ -43,7 +55,7 @@ function FamilyScreen() {
             <FontAwesome
               name="plus"
               size={16}
-              color={showAddForm ? '#fff' : styles.ACCENT_GREEN}
+              color={showAddForm ? '#fff' : PALETTE.ACCENT_GREEN}
               style={styles.buttonIcon}
             />
             <Text style={[styles.buttonText, showAddForm ? styles.activeButtonText : styles.secondaryButtonText]}>Ajouter un Membre</Text>
@@ -58,7 +70,7 @@ function FamilyScreen() {
             <FontAwesome
               name="list-alt"
               size={16}
-              color={!showAddForm ? '#fff' : styles.ACCENT_GREEN}
+              color={!showAddForm ? '#fff' : PALETTE.ACCENT_GREEN}
               style={styles.buttonIcon}
             />
             <Text style={[styles.buttonText, !showAddForm ? styles.activeButtonText : styles.secondaryButtonText]}>Voir les Membres</Text>
@@ -78,21 +90,6 @@ function FamilyScreen() {
 }
 
 const styles = StyleSheet.create({
-  // --- Palette de Couleurs ---
-  ACCENT_GREEN: '#007A5E',       // Vert foncé, vif
-  ACCENT_RED: '#CE1126',         // Rouge vif
-  ACCENT_YELLOW: '#FCD116',      // Jaune vif
-
-  BACKGROUND_PRIMARY: '#FFFFFF',    // Blanc pur pour les éléments principaux (cartes, etc.)
-  // Nouvelle couleur de fond pour les écrans
-  SCREEN_BACKGROUND: '#EEF7F4', // Le vert très clair de HomeScreen
-
-  BORDER_LIGHT: '#E0E0E0',        // Gris très clair pour les bordures légères
-  BORDER_MEDIUM: '#C0C0C0',       // Gris clair pour les bordures moyennes
-
-  TEXT_PRIMARY: '#333333',         // Gris très foncé pour le texte principal
-  TEXT_SECONDARY: '#666666',      // Gris moyen pour le texte secondaire
-
   // --- Styles spécifiques à l'écran FamilyScreen ---
   safeArea: {
     flex: 1,

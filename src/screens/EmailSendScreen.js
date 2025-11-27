@@ -11,9 +11,21 @@
     Alert,
     Platform
   } from 'react-native';
-  import { FontAwesome } from '@expo/vector-icons';
-  import FamilyEmailSelector from '../components/family/FamilyEmailSelector';
-  import EmailService from '../services/EmailService';
+import { FontAwesome } from '@expo/vector-icons';
+import FamilyEmailSelector from '../components/family/FamilyEmailSelector';
+import EmailService from '../services/EmailService';
+
+const PALETTE = {
+  ACCENT_GREEN: '#007A5E',
+  ACCENT_RED: '#CE1126',
+  ACCENT_YELLOW: '#FCD116',
+  BACKGROUND_PRIMARY: '#FFFFFF',
+  SCREEN_BACKGROUND: '#EEF7F4',
+  BORDER_LIGHT: '#E0E0E0',
+  BORDER_MEDIUM: '#C0C0C0',
+  TEXT_PRIMARY: '#333333',
+  TEXT_SECONDARY: '#666666',
+};
 
   function EmailSendScreen() {
     const [selectedMembers, setSelectedMembers] = useState([]);
@@ -73,7 +85,7 @@
       <SafeAreaView style={styles.safeArea}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.headerContainer}>
-            <FontAwesome name="envelope" size={32} color={styles.ACCENT_RED} />
+            <FontAwesome name="envelope" size={32} color={PALETTE.ACCENT_RED} />
             <Text style={styles.title}>Envoi d'Emails</Text>
           </View>
 
@@ -92,42 +104,42 @@
             
             <View style={styles.optionContainer}>
               <View style={styles.optionTextContainer}>
-                <FontAwesome name="calendar" size={20} color={styles.ACCENT_GREEN} style={styles.optionIcon} />
+                <FontAwesome name="calendar" size={20} color={PALETTE.ACCENT_GREEN} style={styles.optionIcon} />
                 <Text style={styles.optionText}>Planning des repas</Text>
               </View>
               <Switch
                 value={includePlanning}
                 onValueChange={setIncludePlanning}
                 trackColor={{ false: '#d1d1d1', true: '#a7e3c5' }}
-                thumbColor={includePlanning ? styles.ACCENT_GREEN : '#f4f3f4'}
+                thumbColor={includePlanning ? PALETTE.ACCENT_GREEN : '#f4f3f4'}
                 ios_backgroundColor="#d1d1d1"
               />
             </View>
 
             <View style={styles.optionContainer}>
               <View style={styles.optionTextContainer}>
-                <FontAwesome name="cubes" size={20} color={styles.ACCENT_GREEN} style={styles.optionIcon} />
+                <FontAwesome name="cubes" size={20} color={PALETTE.ACCENT_GREEN} style={styles.optionIcon} />
                 <Text style={styles.optionText}>État du stock</Text>
               </View>
               <Switch
                 value={includeStock}
                 onValueChange={setIncludeStock}
                 trackColor={{ false: '#d1d1d1', true: '#a7e3c5' }}
-                thumbColor={includeStock ? styles.ACCENT_GREEN : '#f4f3f4'}
+                thumbColor={includeStock ? PALETTE.ACCENT_GREEN : '#f4f3f4'}
                 ios_backgroundColor="#d1d1d1"
               />
             </View>
 
             <View style={styles.optionContainer}>
               <View style={styles.optionTextContainer}>
-                <FontAwesome name="shopping-basket" size={20} color={styles.ACCENT_GREEN} style={styles.optionIcon} />
+                <FontAwesome name="shopping-basket" size={20} color={PALETTE.ACCENT_GREEN} style={styles.optionIcon} />
                 <Text style={styles.optionText}>Liste de courses</Text>
               </View>
               <Switch
                 value={includeShoppingList}
                 onValueChange={setIncludeShoppingList}
                 trackColor={{ false: '#d1d1d1', true: '#a7e3c5' }}
-                thumbColor={includeShoppingList ? styles.ACCENT_GREEN : '#f4f3f4'}
+                thumbColor={includeShoppingList ? PALETTE.ACCENT_GREEN : '#f4f3f4'}
                 ios_backgroundColor="#d1d1d1"
               />
             </View>
@@ -156,21 +168,7 @@
     );
   }
 
-  const styles = StyleSheet.create({
-    // --- Palette de Couleurs ---
-    ACCENT_GREEN: '#007A5E',
-    ACCENT_RED: '#CE1126',
-    ACCENT_YELLOW: '#FCD116',
-
-    BACKGROUND_PRIMARY: '#FFFFFF',
-    SCREEN_BACKGROUND: '#EEF7F4',
-
-    BORDER_LIGHT: '#E0E0E0',
-    BORDER_MEDIUM: '#C0C0C0',
-
-    TEXT_PRIMARY: '#333333',
-    TEXT_SECONDARY: '#666666',
-
+const styles = StyleSheet.create({
     safeArea: {
       flex: 1,
       backgroundColor: '#EEF7F4',

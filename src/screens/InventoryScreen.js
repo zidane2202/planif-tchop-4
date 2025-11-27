@@ -38,6 +38,19 @@ import EmailButton from '../components/common/EmailButton';
 
 moment.locale('fr');
 
+const PALETTE = {
+    ACCENT_GREEN: '#007A5E',
+    ACCENT_RED: '#CE1126',
+    ACCENT_YELLOW: '#FCD116',
+    ACCENT_YELLOW_DARK: '#E6B800',
+    BACKGROUND_PRIMARY: '#FFFFFF',
+    SCREEN_BACKGROUND: '#EEF7F4',
+    BORDER_LIGHT: '#E0E0E0',
+    BORDER_MEDIUM: '#C0C0C0',
+    TEXT_PRIMARY: '#333333',
+    TEXT_SECONDARY: '#666666',
+};
+
 // --- Shared Constants & Helpers ---
 const userId = 'user_test_id'; // Placeholder
 const LOW_STOCK_THRESHOLD = 1;
@@ -67,7 +80,7 @@ function InventoryScreen() {
                         <FontAwesome 
                             name={activeTab === 'stock' ? 'cubes' : 'shopping-basket'} 
                             size={32} 
-                            color={styles.ACCENT_RED} 
+                            color={PALETTE.ACCENT_RED}
                         />
                         <Text style={styles.title}>
                             {activeTab === 'stock' ? 'Gestion du Stock' : 'Liste de Courses'}
@@ -88,7 +101,7 @@ function InventoryScreen() {
                         <FontAwesome
                             name="cubes"
                             size={18}
-                            color={activeTab === 'stock' ? '#fff' : styles.ACCENT_GREEN}
+                            color={activeTab === 'stock' ? '#fff' : PALETTE.ACCENT_GREEN}
                         />
                         <Text style={[styles.tabText, activeTab === 'stock' && styles.activeTabText]}>
                             Stock
@@ -101,7 +114,7 @@ function InventoryScreen() {
                         <FontAwesome
                             name="shopping-basket"
                             size={18}
-                            color={activeTab === 'shopping' ? '#fff' : styles.ACCENT_GREEN}
+                            color={activeTab === 'shopping' ? '#fff' : PALETTE.ACCENT_GREEN}
                         />
                         <Text style={[styles.tabText, activeTab === 'shopping' && styles.activeTabText]}>
                             Liste de Courses
@@ -274,11 +287,11 @@ function StockManagementView() {
             itemStyle = [styles.itemContainer, styles.itemOutOfStock];
             nameStyle = [styles.itemName, styles.itemNameOutOfStock];
             quantityStyle = [styles.itemQuantity, styles.itemQuantityOutOfStock];
-            icon = <FontAwesome name="times-circle" size={16} color={styles.ACCENT_RED} style={styles.statusIcon} />;
+            icon = <FontAwesome name="times-circle" size={16} color={PALETTE.ACCENT_RED} style={styles.statusIcon} />;
         } else if (isLowStock) {
             itemStyle = [styles.itemContainer, styles.itemLowStock];
             quantityStyle = [styles.itemQuantity, styles.itemQuantityLowStock];
-            icon = <FontAwesome name="exclamation-triangle" size={16} color={styles.ACCENT_YELLOW_DARK} style={styles.statusIcon} />;
+            icon = <FontAwesome name="exclamation-triangle" size={16} color={PALETTE.ACCENT_YELLOW_DARK} style={styles.statusIcon} />;
         }
 
         return (
@@ -290,10 +303,10 @@ function StockManagementView() {
                 </View>
                 <View style={styles.itemActions}>
                     <TouchableOpacity onPress={() => openModalToEdit(item)} style={styles.actionButton}>
-                        <FontAwesome name="pencil" size={18} color={styles.ACCENT_GREEN} />
+                        <FontAwesome name="pencil" size={18} color={PALETTE.ACCENT_GREEN} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleDeleteItem(item)} style={styles.actionButton}>
-                        <FontAwesome name="trash" size={18} color={styles.ACCENT_RED} />
+                        <FontAwesome name="trash" size={18} color={PALETTE.ACCENT_RED} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -322,7 +335,7 @@ function StockManagementView() {
                             placeholder="Rechercher un ingrédient..."
                             value={searchQuery}
                             onChangeText={setSearchQuery}
-                            placeholderTextColor={styles.TEXT_SECONDARY} // Ensure placeholder is visible
+                            placeholderTextColor={PALETTE.TEXT_SECONDARY} // Ensure placeholder is visible
                         />
                         <TouchableOpacity onPress={openModalToAdd} style={styles.addButton}>
                             <FontAwesome name="plus" size={20} color="#fff" />
@@ -338,7 +351,7 @@ function StockManagementView() {
                         <Text style={styles.infoText}>Votre stock est vide ou aucun résultat trouvé.</Text>
                     ) : null
                 }
-                ListFooterComponent={loading ? <ActivityIndicator size="large" color={styles.ACCENT_GREEN} style={{ marginVertical: 20 }} /> : null}
+                ListFooterComponent={loading ? <ActivityIndicator size="large" color={PALETTE.ACCENT_GREEN} style={{ marginVertical: 20 }} /> : null}
             />
             {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -357,7 +370,7 @@ function StockManagementView() {
                             placeholder="Nom de l'ingrédient"
                             value={itemName}
                             onChangeText={setItemName}
-                            placeholderTextColor={styles.TEXT_SECONDARY}
+                            placeholderTextColor={PALETTE.TEXT_SECONDARY}
                         />
                         <View style={styles.modalRow}>
                             <TextInput
@@ -366,14 +379,14 @@ function StockManagementView() {
                                 value={itemQuantity}
                                 onChangeText={setItemQuantity}
                                 keyboardType="numeric"
-                                placeholderTextColor={styles.TEXT_SECONDARY}
+                                placeholderTextColor={PALETTE.TEXT_SECONDARY}
                             />
                             <TextInput
                                 style={[styles.modalInput, styles.modalInputHalf]}
                                 placeholder="Unité (kg, g, L, unité...)"
                                 value={itemUnit}
                                 onChangeText={setItemUnit}
-                                placeholderTextColor={styles.TEXT_SECONDARY}
+                                placeholderTextColor={PALETTE.TEXT_SECONDARY}
                             />
                         </View>
                         {/* *** CORRECTION APPLIQUÉE ICI pour les OPTIONS *** */}
@@ -397,12 +410,12 @@ function StockManagementView() {
                         </View>
                         {/* *** FIN DE LA CORRECTION *** */}
                         <View style={styles.modalButtonGroup}>
-                            <Button title="Annuler" onPress={closeModal} color={styles.TEXT_SECONDARY} />
+                            <Button title="Annuler" onPress={closeModal} color={PALETTE.TEXT_SECONDARY} />
                             <Button
                                 title={modalLoading ? 'Sauvegarde...' : 'Sauvegarder'}
                                 onPress={handleSaveItem}
                                 disabled={modalLoading}
-                                color={styles.ACCENT_GREEN}
+                                color={PALETTE.ACCENT_GREEN}
                             />
                         </View>
                     </View>
@@ -597,7 +610,7 @@ function ShoppingListView() {
                 <View style={styles.datePickerGroup}>
                     <Text style={styles.datePickerLabel}>Du:</Text>
                     <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.datePickerButton}>
-                        <FontAwesome name="calendar" size={16} color={styles.TEXT_SECONDARY} style={{ marginRight: 8 }} />
+                        <FontAwesome name="calendar" size={16} color={PALETTE.TEXT_SECONDARY} style={{ marginRight: 8 }} />
                         <Text style={styles.datePickerButtonText}>{moment(startDate).format('DD/MM/YYYY')}</Text>
                     </TouchableOpacity>
                     {showStartDatePicker && (
@@ -612,7 +625,7 @@ function ShoppingListView() {
                 <View style={styles.datePickerGroup}>
                     <Text style={styles.datePickerLabel}>Au:</Text>
                     <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.datePickerButton}>
-                        <FontAwesome name="calendar" size={16} color={styles.TEXT_SECONDARY} style={{ marginRight: 8 }} />
+                        <FontAwesome name="calendar" size={16} color={PALETTE.TEXT_SECONDARY} style={{ marginRight: 8 }} />
                         <Text style={styles.datePickerButtonText}>{moment(endDate).format('DD/MM/YYYY')}</Text>
                     </TouchableOpacity>
                     {showEndDatePicker && (
@@ -639,7 +652,7 @@ function ShoppingListView() {
             {error && <Text style={styles.errorText}>{error}</Text>}
 
             {loading ? (
-                <ActivityIndicator size="large" color={styles.ACCENT_GREEN} style={{ marginVertical: 20 }} />
+                <ActivityIndicator size="large" color={PALETTE.ACCENT_GREEN} style={{ marginVertical: 20 }} />
             ) : (
                 <FlatList
                     data={Object.keys(shoppingList).sort()}
@@ -658,18 +671,6 @@ function ShoppingListView() {
 }
 
 const styles = StyleSheet.create({
-    // --- Palette de Couleurs ---
-    ACCENT_GREEN: '#007A5E',
-    ACCENT_RED: '#CE1126',
-    ACCENT_YELLOW: '#FCD116',
-    ACCENT_YELLOW_DARK: '#E6B800', // Darker yellow for better contrast
-    BACKGROUND_PRIMARY: '#FFFFFF',
-    SCREEN_BACKGROUND: '#EEF7F4',
-    BORDER_LIGHT: '#E0E0E0',
-    BORDER_MEDIUM: '#C0C0C0',
-    TEXT_PRIMARY: '#333333',
-    TEXT_SECONDARY: '#666666',
-
     // --- Main Screen Styles ---
     safeArea: {
         flex: 1,

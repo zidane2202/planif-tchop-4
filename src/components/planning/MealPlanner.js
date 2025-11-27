@@ -45,6 +45,23 @@ const MEAL_TYPES = [
 // Placeholder User ID - Replace with actual authenticated user ID
 const userId = 'user_test_id';
 
+const PALETTE = {
+    ACCENT_GREEN: '#007A5E',
+    ACCENT_RED: '#CE1126',
+    ACCENT_BLUE: '#007bff',
+    BACKGROUND_PRIMARY: '#FFFFFF',
+    BACKGROUND_SECONDARY: '#f8f9fa',
+    BACKGROUND_PREPARED: '#e9f5e9',
+    BORDER_LIGHT: '#ced4da',
+    TEXT_PRIMARY: '#343a40',
+    TEXT_SECONDARY: '#6c757d',
+    TEXT_WHITE: '#FFFFFF',
+    TEXT_PLACEHOLDER: '#6c757d',
+    TEXT_LINK: '#007bff',
+    TEXT_ERROR: '#dc3545',
+    TEXT_SUCCESS: '#007A5E',
+};
+
 function MealPlanner() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -252,7 +269,7 @@ function MealPlanner() {
     // --- Composant Header pour la FlatList (Formulaire + Titre Planning) ---
     const renderListHeader = () => (
         <View style={styles.headerFooterContainer}>
-            <Text style={styles.sectionTitle}><FontAwesome name="calendar-plus-o" size={20} color={styles.TEXT_PRIMARY} /> Planifier un Repas</Text>
+            <Text style={styles.sectionTitle}><FontAwesome name="calendar-plus-o" size={20} color={PALETTE.TEXT_PRIMARY} /> Planifier un Repas</Text>
 
             {/* Affichage de l'erreur globale */} 
             {error && <Text style={styles.errorText}>{error}</Text>}
@@ -263,7 +280,7 @@ function MealPlanner() {
                 <View style={styles.formGroup}>
                     <Text style={styles.label}>Date:</Text>
                     <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
-                        <FontAwesome name="calendar" size={16} color={styles.TEXT_SECONDARY} style={{ marginRight: 8 }} />
+                        <FontAwesome name="calendar" size={16} color={PALETTE.TEXT_SECONDARY} style={{ marginRight: 8 }} />
                         <Text style={styles.dateButtonText}>{moment(selectedDate).format('dddd DD MMMM YYYY')}</Text>
                     </TouchableOpacity>
                     {showDatePicker && (
@@ -299,7 +316,7 @@ function MealPlanner() {
                 <View style={styles.formGroup}>
                     <Text style={styles.label}>Plat:</Text>
                     {loadingDishes ? (
-                        <ActivityIndicator color={styles.ACCENT_GREEN} />
+                        <ActivityIndicator color={PALETTE.ACCENT_GREEN} />
                     ) : dishes.length > 0 ? (
                         <View style={styles.pickerContainer}>
                             <Picker
@@ -346,13 +363,13 @@ function MealPlanner() {
             </View>
 
             {/* Titre pour la section planning */} 
-            <Text style={styles.sectionTitle}><FontAwesome name="calendar" size={20} color={styles.TEXT_PRIMARY} /> Planning de la semaine</Text>
+            <Text style={styles.sectionTitle}><FontAwesome name="calendar" size={20} color={PALETTE.TEXT_PRIMARY} /> Planning de la semaine</Text>
             <Text style={styles.weekRangeText}>
                 ({moment(selectedDate).startOf('week').format('DD MMM')} - {moment(selectedDate).endOf('week').format('DD MMM')})
             </Text>
 
             {/* Indicateur de chargement pour les plans */} 
-            {loadingPlans && <ActivityIndicator size="large" color={styles.ACCENT_GREEN} style={{ marginVertical: 20 }} />}
+            {loadingPlans && <ActivityIndicator size="large" color={PALETTE.ACCENT_GREEN} style={{ marginVertical: 20 }} />}
         </View>
     );
 
@@ -374,7 +391,7 @@ function MealPlanner() {
                                 </Text>
                                 {plan.prepared && (
                                     <Text style={styles.preparedText}>
-                                        <FontAwesome name="check-circle" size={12} color={styles.ACCENT_GREEN} /> Préparé
+                                        <FontAwesome name="check-circle" size={12} color={PALETTE.ACCENT_GREEN} /> Préparé
                                     </Text>
                                 )}
                             </View>
@@ -389,15 +406,15 @@ function MealPlanner() {
                                         disabled={loadingPrepare[plan.id]}
                                     >
                                         {loadingPrepare[plan.id] ? (
-                                            <ActivityIndicator size="small" color={styles.ACCENT_GREEN} />
+                                            <ActivityIndicator size="small" color={PALETTE.ACCENT_GREEN} />
                                         ) : (
-                                            <FontAwesome name="check-square-o" size={22} color={styles.ACCENT_GREEN} />
+                                            <FontAwesome name="check-square-o" size={22} color={PALETTE.ACCENT_GREEN} />
                                         )}
                                     </TouchableOpacity>
                                 )}
                                 {/* Bouton Supprimer */} 
                                 <TouchableOpacity onPress={() => handleDeleteMealPlan(plan.id)} style={styles.deleteButton}>
-                                    <FontAwesome name="trash" size={20} color={styles.ACCENT_RED} />
+                                    <FontAwesome name="trash" size={20} color={PALETTE.ACCENT_RED} />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -437,22 +454,6 @@ function MealPlanner() {
 
 // --- Styles --- (Inspirés des documents fournis, couleurs de pasted_content_2.txt)
 const styles = StyleSheet.create({
-    // --- Palette (extraite de pasted_content_2.txt et complétée) ---
-    ACCENT_GREEN: '#007A5E',       // Vert principal
-    ACCENT_RED: '#CE1126',         // Rouge principal
-    ACCENT_BLUE: '#007bff',        // Bleu pour les boutons/liens (vu dans pasted_content_2)
-    BACKGROUND_PRIMARY: '#FFFFFF',    // Fond blanc pour cartes/formulaires
-    BACKGROUND_SECONDARY: '#f8f9fa', // Fond gris clair pour l'écran (vu dans pasted_content_2)
-    BACKGROUND_PREPARED: '#e9f5e9', // Fond vert clair pour repas préparés (vu dans pasted_content_2)
-    BORDER_LIGHT: '#ced4da',        // Bordure claire pour inputs/pickers (vu dans pasted_content_2)
-    TEXT_PRIMARY: '#343a40',         // Texte principal sombre (vu dans pasted_content_2)
-    TEXT_SECONDARY: '#6c757d',      // Texte secondaire gris (vu dans pasted_content_2)
-    TEXT_WHITE: '#FFFFFF',           // Texte blanc
-    TEXT_PLACEHOLDER: '#6c757d',    // Couleur Placeholder
-    TEXT_LINK: '#007bff',           // Couleur Lien/Titre Jour
-    TEXT_ERROR: '#dc3545',         // Rouge pour erreurs (cohérent avec ACCENT_RED)
-    TEXT_SUCCESS: '#007A5E',       // Vert pour succès (cohérent avec ACCENT_GREEN)
-
     // --- Styles Généraux ---
     container: {
         flex: 1,

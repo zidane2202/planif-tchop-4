@@ -4,6 +4,18 @@ import { FontAwesome } from '@expo/vector-icons';
 import AddDishForm from '../components/dishes/AddDishForm';
 import DishesList from '../components/dishes/DishesList';
 
+const PALETTE = {
+  ACCENT_GREEN: '#007A5E',
+  ACCENT_RED: '#CE1126',
+  ACCENT_YELLOW: '#FCD116',
+  BACKGROUND_PRIMARY: '#FFFFFF',
+  SCREEN_BACKGROUND: '#EEF7F4',
+  BORDER_LIGHT: '#E0E0E0',
+  BORDER_MEDIUM: '#C0C0C0',
+  TEXT_PRIMARY: '#333333',
+  TEXT_SECONDARY: '#666666',
+};
+
 function DishesScreen() {
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -11,7 +23,7 @@ function DishesScreen() {
     <SafeAreaView style={styles.safeArea}>
       {/* Header remains outside scroll/list */}
       <View style={styles.headerContainer}>
-        <FontAwesome name="cutlery" size={32} color={styles.ACCENT_RED} />
+        <FontAwesome name="cutlery" size={32} color={PALETTE.ACCENT_RED} />
         <Text style={styles.title}>Gestion des Plats</Text>
       </View>
 
@@ -21,14 +33,14 @@ function DishesScreen() {
           style={[styles.button, showAddForm ? styles.activeButton : styles.secondaryButton]}
           onPress={() => setShowAddForm(true)}
         >
-          <FontAwesome name="plus" size={16} color={showAddForm ? '#fff' : styles.ACCENT_GREEN} style={styles.buttonIcon} />
+          <FontAwesome name="plus" size={16} color={showAddForm ? '#fff' : PALETTE.ACCENT_GREEN} style={styles.buttonIcon} />
           <Text style={[styles.buttonText, showAddForm ? styles.activeButtonText : styles.secondaryButtonText]}>Ajouter un Plat</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, !showAddForm ? styles.activeButton : styles.secondaryButton]}
           onPress={() => setShowAddForm(false)}
         >
-          <FontAwesome name="list-alt" size={16} color={!showAddForm ? '#fff' : styles.ACCENT_GREEN} style={styles.buttonIcon} />
+          <FontAwesome name="list-alt" size={16} color={!showAddForm ? '#fff' : PALETTE.ACCENT_GREEN} style={styles.buttonIcon} />
           <Text style={[styles.buttonText, !showAddForm ? styles.activeButtonText : styles.secondaryButtonText]}>Voir les Plats</Text>
         </TouchableOpacity>
       </View>
@@ -51,17 +63,6 @@ function DishesScreen() {
 
 // Styles need slight adjustments, add formScrollContainer
 const styles = StyleSheet.create({
-  // --- Palette de Couleurs ---
-  ACCENT_GREEN: '#007A5E',
-  ACCENT_RED: '#CE1126',
-  ACCENT_YELLOW: '#FCD116',
-  BACKGROUND_PRIMARY: '#FFFFFF',
-  SCREEN_BACKGROUND: '#EEF7F4',
-  BORDER_LIGHT: '#E0E0E0',
-  BORDER_MEDIUM: '#C0C0C0',
-  TEXT_PRIMARY: '#333333',
-  TEXT_SECONDARY: '#666666',
-
   safeArea: {
     flex: 1,
     backgroundColor: '#EEF7F4',

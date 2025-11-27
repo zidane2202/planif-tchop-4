@@ -35,6 +35,21 @@ const groupStockByCategory = (stockData) => {
 // Define low stock threshold (can be adjusted)
 const LOW_STOCK_THRESHOLD = 1;
 
+const PALETTE = {
+    ACCENT_GREEN: '#007A5E',
+    ACCENT_RED: '#CE1126',
+    ACCENT_YELLOW: '#FCD116',
+    ACCENT_YELLOW_DARK: '#EAA800',
+    BACKGROUND_PRIMARY: '#FFFFFF',
+    SCREEN_BACKGROUND: '#EEF7F4',
+    BORDER_LIGHT: '#E0E0E0',
+    BORDER_MEDIUM: '#C0C0C0',
+    TEXT_PRIMARY: '#333333',
+    TEXT_SECONDARY: '#666666',
+    OUT_OF_STOCK_BG: '#ffebee',
+    LOW_STOCK_BG: '#fff8e1',
+};
+
 function StockManagementScreen() {
     const [stock, setStock] = useState({});
     const [loading, setLoading] = useState(true);
@@ -193,11 +208,11 @@ function StockManagementScreen() {
             itemStyle = [styles.itemContainer, styles.itemOutOfStock];
             nameStyle = [styles.itemName, styles.itemNameOutOfStock];
             quantityStyle = [styles.itemQuantity, styles.itemQuantityOutOfStock];
-            icon = <FontAwesome name="times-circle" size={16} color={styles.ACCENT_RED} style={styles.statusIcon} />;
+            icon = <FontAwesome name="times-circle" size={16} color={PALETTE.ACCENT_RED} style={styles.statusIcon} />;
         } else if (isLowStock) {
             itemStyle = [styles.itemContainer, styles.itemLowStock];
             quantityStyle = [styles.itemQuantity, styles.itemQuantityLowStock];
-            icon = <FontAwesome name="exclamation-triangle" size={16} color={styles.ACCENT_YELLOW_DARK} style={styles.statusIcon} />;
+            icon = <FontAwesome name="exclamation-triangle" size={16} color={PALETTE.ACCENT_YELLOW_DARK} style={styles.statusIcon} />;
         }
 
         return (
@@ -209,10 +224,10 @@ function StockManagementScreen() {
                 </View>
                 <View style={styles.itemActions}>
                     <TouchableOpacity onPress={() => openModalToEdit(item)} style={styles.actionButton}>
-                        <FontAwesome name="pencil" size={18} color={styles.ACCENT_GREEN} />
+                        <FontAwesome name="pencil" size={18} color={PALETTE.ACCENT_GREEN} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleDeleteItem(item)} style={styles.actionButton}>
-                        <FontAwesome name="trash" size={18} color={styles.ACCENT_RED} />
+                        <FontAwesome name="trash" size={18} color={PALETTE.ACCENT_RED} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -238,7 +253,7 @@ function StockManagementScreen() {
                 ListHeaderComponent={
                     <>
                         <View style={styles.headerContainer}>
-                            <FontAwesome name="cubes" size={32} color={styles.ACCENT_GREEN} />
+                            <FontAwesome name="cubes" size={32} color={PALETTE.ACCENT_GREEN} />
                             <Text style={styles.title}>Gestion du Stock</Text>
                         </View>
                         <View style={styles.searchAddContainer}>
@@ -252,7 +267,7 @@ function StockManagementScreen() {
                                 <FontAwesome name="plus" size={20} color="#fff" />
                             </TouchableOpacity>
                         </View>
-                        {loading && <ActivityIndicator size="large" color={styles.ACCENT_GREEN} style={{ marginVertical: 20 }} />}
+                        {loading && <ActivityIndicator size="large" color={PALETTE.ACCENT_GREEN} style={{ marginVertical: 20 }} />}
                         {error && <Text style={styles.errorText}>{error}</Text>}
                     </>
                 }
@@ -312,12 +327,12 @@ function StockManagementScreen() {
                         </View>
 
                         <View style={styles.modalButtonGroup}>
-                            <Button title="Annuler" onPress={closeModal} color={styles.TEXT_SECONDARY} />
+                            <Button title="Annuler" onPress={closeModal} color={PALETTE.TEXT_SECONDARY} />
                             <Button
                                 title={modalLoading ? 'Sauvegarde...' : 'Sauvegarder'}
                                 onPress={handleSaveItem}
                                 disabled={modalLoading}
-                                color={styles.ACCENT_GREEN}
+                                color={PALETTE.ACCENT_GREEN}
                             />
                         </View>
                     </View>
@@ -329,20 +344,6 @@ function StockManagementScreen() {
 
 // --- Styles --- (Add styles for stock status)
 const styles = StyleSheet.create({
-    // --- Palette de Couleurs ---
-    ACCENT_GREEN: '#007A5E',
-    ACCENT_RED: '#CE1126',
-    ACCENT_YELLOW: '#FCD116',
-    ACCENT_YELLOW_DARK: '#EAA800', // Darker yellow/orange for low stock warning
-    BACKGROUND_PRIMARY: '#FFFFFF',
-    SCREEN_BACKGROUND: '#EEF7F4',
-    BORDER_LIGHT: '#E0E0E0',
-    BORDER_MEDIUM: '#C0C0C0',
-    TEXT_PRIMARY: '#333333',
-    TEXT_SECONDARY: '#666666',
-    OUT_OF_STOCK_BG: '#ffebee', // Light red background for out of stock
-    LOW_STOCK_BG: '#fff8e1', // Light yellow background for low stock
-
     safeArea: {
         flex: 1,
         backgroundColor: '#EEF7F4',

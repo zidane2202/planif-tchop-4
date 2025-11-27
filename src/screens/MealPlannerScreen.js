@@ -4,13 +4,25 @@ import { FontAwesome } from '@expo/vector-icons';
 import MealPlanner from '../components/planning/MealPlanner';
 import EmailButton from '../components/common/EmailButton';
 
+const PALETTE = {
+  ACCENT_GREEN: '#007A5E',
+  ACCENT_RED: '#CE1126',
+  ACCENT_YELLOW: '#FCD116',
+  BACKGROUND_PRIMARY: '#FFFFFF',
+  SCREEN_BACKGROUND: '#EEF7F4',
+  BORDER_LIGHT: '#E0E0E0',
+  BORDER_MEDIUM: '#C0C0C0',
+  TEXT_PRIMARY: '#333333',
+  TEXT_SECONDARY: '#666666',
+};
+
 function MealPlannerScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header with email button */}
       <View style={styles.headerContainer}>
         <View style={styles.titleContainer}>
-          <FontAwesome name="calendar" size={32} color={styles.ACCENT_RED} />
+          <FontAwesome name="calendar" size={32} color={PALETTE.ACCENT_RED} />
           <Text style={styles.title}>Planning des Repas</Text>
         </View>
       </View>
@@ -29,17 +41,6 @@ function MealPlannerScreen() {
 
 // Styles adjusted to include the email button
 const styles = StyleSheet.create({
-  // --- Palette de Couleurs ---
-  ACCENT_GREEN: '#007A5E',
-  ACCENT_RED: '#CE1126',
-  ACCENT_YELLOW: '#FCD116',
-  BACKGROUND_PRIMARY: '#FFFFFF',
-  SCREEN_BACKGROUND: '#EEF7F4',
-  BORDER_LIGHT: '#E0E0E0',
-  BORDER_MEDIUM: '#C0C0C0',
-  TEXT_PRIMARY: '#333333',
-  TEXT_SECONDARY: '#666666',
-
   safeArea: {
     flex: 1,
     backgroundColor: '#EEF7F4',
