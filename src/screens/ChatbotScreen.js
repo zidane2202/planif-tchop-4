@@ -83,7 +83,15 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
         }
       });
       console.log('Réponse reçue du serveur');
-      const serverResponse = res.data?.response;
+      console.log('Payload brut du serveur:', res.data);
+      const payload = res.data;
+      let serverResponse;
+
+      if (payload && typeof payload === 'object' && 'response' in payload) {
+        serverResponse = payload.response;
+      } else {
+        serverResponse = payload;
+      }
       let botText = '';
 
       if (typeof serverResponse === 'string') {
@@ -272,6 +280,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     color: '#222',
     padding: 10,
+    outlineStyle: 'none', // Empêche l'affichage du contour sur le web
+    outlineWidth: 0,
+    outlineColor: 'transparent',
   },
   sendBtn: {
     marginLeft: 8,
