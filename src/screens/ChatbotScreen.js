@@ -83,11 +83,23 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
         }
       });
       console.log('Réponse reçue du serveur');
+      const serverResponse = res.data?.response;
+      let botText = '';
+
+      if (typeof serverResponse === 'string') {
+        botText = serverResponse;
+      } else if (serverResponse !== undefined && serverResponse !== null) {
+        // Convert non-string responses (objects, arrays, etc.) to a readable string
+        botText = JSON.stringify(serverResponse, null, 2);
+      } else {
+        botText = "Je n'ai pas reçu de réponse compréhensible du serveur.";
+      }
+
       setMessages((prev) => [
         ...prev,
-        { from: 'bot', text: res.data.response },
+        { from: 'bot', text: botText },
       ]);
-      setSuggestions(res.data.suggestions || []);
+      setSuggestions(Array.isArray(res.data?.suggestions) ? res.data.suggestions : []);
     } catch (e) {
       console.error('Erreur chatbot:', e);
       let errorMessage = "Désolé, je rencontre un problème technique.";
