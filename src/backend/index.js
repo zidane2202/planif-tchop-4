@@ -75,10 +75,19 @@ MESSAGE DE L'UTILISATEUR : "${userMessage}"
 `;
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const result = await model.generateContent(context);
-    const response = result.response.text();
+    const response = result?.response?.text?.();
+
+    let responseText = '';
+    if (typeof response === 'string' && response.trim().length > 0) {
+      responseText = response;
+    } else {
+      console.warn('Réponse IA vide ou non textuelle:', response);
+      responseText = "Je n'ai pas pu générer de réponse compréhensible. Réessaie dans un instant.";
+    }
+
     // Suggestions intelligentes
     const suggestions = generateSuggestions(userMessage, userIngredients, availableRecipes);
-    res.json({ response, suggestions });
+    res.json({ response: responseText, suggestions });
   } catch (error) {
     console.error("Erreur chatbot:", error);
     res.status(500).json({
