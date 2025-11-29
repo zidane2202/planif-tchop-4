@@ -2,11 +2,30 @@ import express from 'express';
 import cors from 'cors';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
-dotenv.config();
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env file from backend directory, or use process.env (for Render)
+dotenv.config({ path: join(__dirname, '.env') });
 
 const app = express();
-app.use(cors());
+
+// CORS configuration - allow all origins in production, or specific ones
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '20mb' }));
+
+// API Routes - must come before static file serving
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy' });
+});
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_APIKEY);
 
@@ -99,5 +118,42 @@ function generateSuggestions(userMessage, userIngredients, availableRecipes) {
   return suggestions.slice(0, 3);
 }
 
+// Serve static files from the Expo web build (if it exists)
+// Path: project root -> dist (Expo web export output)
+import fs from 'fs';
+
+const projectRoot = join(__dirname, '../../');
+const distPath = join(projectRoot, 'dist');
+
+// Check if dist folder exists (production build)
+if (fs.existsSync(distPath)) {
+  // Serve static files
+  app.use(express.static(distPath));
+  
+  // Serve index.html for all non-API routes (SPA routing)
+  app.get('*', (req, res) => {
+    // Don't serve index.html for API routes
+    if (req.path.startsWith('/chat') || req.path.startsWith('/health')) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+    res.sendFile(join(distPath, 'index.html'));
+  });
+  console.log('Serving static files from:', distPath);
+} else {
+  // Development mode - just show API status
+  app.get('/', (req, res) => {
+    res.json({ 
+      status: 'ok', 
+      message: 'Planif-Tchop API is running (development mode - frontend not built)',
+      timestamp: new Date().toISOString()
+    });
+  });
+  console.log('Development mode: Frontend not built, serving API only');
+}
+
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log('API Gemini démarrée sur le port', PORT)); 
+app.listen(PORT, () => {
+  console.log('Planif-Tchop server démarré sur le port', PORT);
+  console.log(`API disponible sur http://localhost:${PORT}/chat`);
+  console.log(`Frontend disponible sur http://localhost:${PORT}/`);
+}); 

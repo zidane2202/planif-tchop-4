@@ -4,8 +4,33 @@ import axios from 'axios';
 import Markdown from 'react-native-markdown-display';
 import { FontAwesome } from '@expo/vector-icons';
 
-// À remplacer par l'URL de ton backend Node.js déployé
-const API_URL = 'http://172.20.10.4:3001/chat';
+// Configuration de l'URL du backend
+// Utilise une variable d'environnement si disponible, sinon utilise des valeurs par défaut
+// Pour Expo: utilisez expo-constants ou une config similaire
+// Pour développement local (émulateur Android/iOS): utilisez votre IP locale
+// Exemples: 'http://10.26.131.89:3001/chat' ou 'http://172.26.208.1:3001/chat'
+// Pour web ou si backend sur même machine: 'http://localhost:3001/chat'
+// Pour production (Render): utilise une URL relative si déployé ensemble, sinon URL complète
+const getApiUrl = () => {
+  // Priorité: variable d'environnement > __DEV__ check > fallback
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+  if (__DEV__) {
+    // Développement local - changez cette IP selon votre réseau
+    return 'http://10.26.131.89:3001/chat';
+  }
+  // Production - si déployé sur le même domaine, utilise une URL relative
+  // Sinon, utilisez l'URL complète de votre backend Render
+  if (typeof window !== 'undefined' && window.location) {
+    // Web: utilise une URL relative (même domaine)
+    return '/chat';
+  }
+  // Mobile/autres: utilisez votre URL Render complète
+  return 'https://planif-tchop.onrender.com/chat';
+};
+
+const API_URL = getApiUrl();
 export default function ChatbotScreen({ userDishes = [], userIngredients = [], availableRecipes = [], mealPlans = [], familyMembers = [] }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -43,6 +68,7 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
     });
 
     try {
+      console.log('Tentative de connexion à:', API_URL);
       const res = await axios.post(API_URL, {
         userDishes,
         userIngredients,
@@ -50,16 +76,37 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
         mealPlans,
         familyMembers,
         userMessage,
+      }, {
+        timeout: 30000, // 30 secondes de timeout
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
+      console.log('Réponse reçue du serveur');
       setMessages((prev) => [
         ...prev,
         { from: 'bot', text: res.data.response },
       ]);
       setSuggestions(res.data.suggestions || []);
     } catch (e) {
+      console.error('Erreur chatbot:', e);
+      let errorMessage = "Désolé, je rencontre un problème technique.";
+      
+      if (e.code === 'ECONNREFUSED' || e.message?.includes('Network Error')) {
+        errorMessage = "Impossible de se connecter au serveur. Vérifiez que le backend est démarré et accessible à l'adresse : " + API_URL;
+      } else if (e.code === 'ETIMEDOUT' || e.message?.includes('timeout')) {
+        errorMessage = "La requête a pris trop de temps. Le serveur ne répond pas.";
+      } else if (e.response) {
+        // Le serveur a répondu avec un code d'erreur
+        errorMessage = `Erreur serveur (${e.response.status}): ${e.response.data?.message || 'Erreur inconnue'}`;
+      } else if (e.request) {
+        // La requête a été faite mais aucune réponse n'a été reçue
+        errorMessage = "Aucune réponse du serveur. Vérifiez votre connexion réseau.";
+      }
+      
       setMessages((prev) => [
         ...prev,
-        { from: 'bot', text: "Désolé, je rencontre un problème technique." },
+        { from: 'bot', text: errorMessage },
       ]);
     }
     setLoading(false);
@@ -142,6 +189,9 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
           onChangeText={setInput}
           placeholder="Pose ta question ou demande une recette..."
           placeholderTextColor="#888"
+          onSubmitEditing={sendMessage}
+          returnKeyType="send"
+          blurOnSubmit={false}
         />
         <TouchableOpacity onPress={sendMessage} style={styles.sendBtn} disabled={loading}>
           <Text style={styles.sendText}>Envoyer</Text>
