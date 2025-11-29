@@ -139,15 +139,19 @@ const distPath = join(projectRoot, 'dist');
 if (fs.existsSync(distPath)) {
   // Serve static files
   app.use(express.static(distPath));
-  
-  // Serve index.html for all non-API routes (SPA routing)
-  app.get('*', (req, res) => {
-    // Don't serve index.html for API routes
-    if (req.path.startsWith('/chat') || req.path.startsWith('/health')) {
-      return res.status(404).json({ error: 'Not found' });
+
+  // Middleware to handle SPA routing for non-API GET requests
+  app.use((req, res, next) => {
+    if (
+      req.method === 'GET' &&
+      !req.path.startsWith('/chat') &&
+      !req.path.startsWith('/health')
+    ) {
+      return res.sendFile(join(distPath, 'index.html'));
     }
-    res.sendFile(join(distPath, 'index.html'));
+    next();
   });
+
   console.log('Serving static files from:', distPath);
 } else {
   // Development mode - just show API status
