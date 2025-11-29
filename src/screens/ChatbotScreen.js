@@ -84,6 +84,7 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
       });
       console.log('Réponse reçue du serveur');
       console.log('Payload brut du serveur:', res.data);
+      console.log('Type payload:', typeof res.data, 'Keys:', res.data && typeof res.data === 'object' ? Object.keys(res.data) : 'N/A');
       const payload = res.data;
       let serverResponse;
 
@@ -100,7 +101,7 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
         // Convert non-string responses (objects, arrays, etc.) to a readable string
         botText = JSON.stringify(serverResponse, null, 2);
       } else {
-        botText = "Je n'ai pas reçu de réponse compréhensible du serveur.";
+        botText = `Réponse vide reçue. Payload: ${JSON.stringify(payload)}`;
       }
 
       setMessages((prev) => [

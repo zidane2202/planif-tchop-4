@@ -87,6 +87,7 @@ MESSAGE DE L'UTILISATEUR : "${userMessage}"
 
     // Suggestions intelligentes
     const suggestions = generateSuggestions(userMessage, userIngredients, availableRecipes);
+    console.log('Réponse IA finale (préfix 200 chars):', responseText.slice(0, 200));
     res.json({ response: responseText, suggestions });
   } catch (error) {
     console.error("Erreur chatbot:", error);
