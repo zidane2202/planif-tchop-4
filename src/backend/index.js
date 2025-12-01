@@ -132,8 +132,10 @@ function generateSuggestions(userMessage, userIngredients, availableRecipes) {
 // Path: project root -> dist (Expo web export output)
 import fs from 'fs';
 
-const projectRoot = join(__dirname, '../../');
-const distPath = join(projectRoot, 'dist');
+// In production on Render, process.cwd() points to the project root where
+// the Expo web export creates the "dist" folder. Using process.cwd() is
+// therefore more reliable than walking up from __dirname.
+const distPath = join(process.cwd(), 'dist');
 
 // Check if dist folder exists (production build)
 if (fs.existsSync(distPath)) {
