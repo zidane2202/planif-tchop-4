@@ -16,6 +16,7 @@ const app = express();
 console.log('Current working directory:', process.cwd());
 
 
+
 // CORS configuration - allow all origins in production, or specific ones
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || '*',
@@ -23,6 +24,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '20mb' }));
+
 
 // API Routes - must come before static file serving
 // Health check endpoint
@@ -143,18 +145,27 @@ const distPath = join(process.cwd(), 'dist');
 // Check if dist folder exists (production build)
 if (fs.existsSync(distPath)) {
   // Serve static files
-  app.use(express.static(distPath));
-  
+  console.log('Serving static files from:', distPath);
   // Serve index.html for all non-API routes (SPA routing)
-  app.get('*', (req, res) => {
-    // Don't serve index.html for API routes
+  // Serve static files
+  app.use(express.static(distPath));
+
+
+  // Use middleware for catch-all (Express 5 safe)
+  app.use((req, res, next) => {
+    // API protection
     if (req.path.startsWith('/chat') || req.path.startsWith('/health')) {
       return res.status(404).json({ error: 'Not found' });
     }
+    // Check if GET request
+    if (req.method !== 'GET') {
+      return next();
+    }
     res.sendFile(join(distPath, 'index.html'));
   });
-  console.log('Serving static files from:', distPath);
+
 } else {
+
   // Development mode - just show API status
   app.get('/', (req, res) => {
     res.json({ 
