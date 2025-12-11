@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     buildCommand: npm install && npm run build:web && cd src/backend && npm install
-    startCommand: cd src/backend && npm start
+    startCommand: node src/backend/index.js
     envVars:
       - key: NODE_ENV
         value: production

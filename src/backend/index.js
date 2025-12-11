@@ -13,6 +13,9 @@ dotenv.config({ path: join(__dirname, '.env') });
 
 const app = express();
 
+console.log('Current working directory:', process.cwd());
+
+
 // CORS configuration - allow all origins in production, or specific ones
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || '*',
