@@ -86,8 +86,13 @@ RÈGLES :
 
 MESSAGE DE L'UTILISATEUR : "${userMessage}"
 `;
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-1.5-flash-001...`);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
+    
+    console.log(`[${new Date().toISOString()}] Envoi de la requête à Gemini...`);
     const result = await model.generateContent(context);
+    console.log(`[${new Date().toISOString()}] Réponse reçue de Gemini.`);
+    
     const response = result?.response?.text?.();
 
     let responseText = '';
