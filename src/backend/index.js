@@ -38,7 +38,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_APIKEY);
 app.get('/test-ai', async (req, res) => {
   try {
     console.log(`[${new Date().toISOString()}] Test AI requested`);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
     const result = await model.generateContent("Say 'Hello, I am working!'");
     const response = result.response.text();
     res.json({ status: 'ok', message: response });
@@ -116,8 +116,8 @@ RÈGLES :
 
 MESSAGE DE L'UTILISATEUR : "${userMessage}"
 `;
-    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-1.5-flash-latest...`);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-2.0-flash-exp...`);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
     
     console.log(`[${new Date().toISOString()}] Envoi de la requête à Gemini...`);
     const result = await model.generateContent(context);
