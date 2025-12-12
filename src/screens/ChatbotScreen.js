@@ -77,7 +77,7 @@ export default function ChatbotScreen({ userDishes = [], userIngredients = [], a
         familyMembers,
         userMessage,
       }, {
-        timeout: 60000, // 60 secondes de timeout
+        timeout: 120000, // 120 secondes de timeout (pour gérer les cold starts)
         headers: {
           'Content-Type': 'application/json',
         }

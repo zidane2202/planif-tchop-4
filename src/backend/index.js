@@ -34,6 +34,20 @@ app.get('/health', (req, res) => {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_APIKEY);
 
+// Endpoint de test léger pour vérifier la connectivité Gemini
+app.get('/test-ai', async (req, res) => {
+  try {
+    console.log(`[${new Date().toISOString()}] Test AI requested`);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
+    const result = await model.generateContent("Say 'Hello, I am working!'");
+    const response = result.response.text();
+    res.json({ status: 'ok', message: response });
+  } catch (error) {
+    console.error("Test AI Error:", error);
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+});
+
 // Handler principal du chatbot
 app.post('/chat', async (req, res) => {
   try {
