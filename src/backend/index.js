@@ -37,6 +37,14 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_APIKEY);
 // Handler principal du chatbot
 app.post('/chat', async (req, res) => {
   try {
+    if (!process.env.GEMINI_APIKEY) {
+      console.error('ERREUR CRITIQUE: GEMINI_APIKEY non définie dans les variables d\'environnement');
+      return res.status(500).json({ 
+        response: "Configuration serveur incomplète : Clé API manquante.",
+        error: "GEMINI_APIKEY_MISSING"
+      });
+    }
+
     const { userDishes = [], userIngredients = [], availableRecipes = [], mealPlans = [], familyMembers = [], userMessage = "" } = req.body;
     console.log('Données reçues:', {
       userDishes: userDishes.length,
@@ -95,9 +103,11 @@ MESSAGE DE L'UTILISATEUR : "${userMessage}"
     console.log('Réponse IA finale (préfix 200 chars):', responseText.slice(0, 200));
     res.json({ response: responseText, suggestions });
   } catch (error) {
-    console.error("Erreur chatbot:", error);
+    console.error("Erreur chatbot détaillée:", error);
+    // Return specific error message for debugging
     res.status(500).json({
-      response: "Désolé, je rencontre des difficultés techniques. Veuillez réessayer plus tard.",
+      response: "Désolé, je rencontre des difficultés techniques.",
+      message: error.message, // Helpful for client debugging
       suggestions: [],
     });
   }
