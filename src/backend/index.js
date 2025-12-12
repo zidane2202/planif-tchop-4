@@ -38,13 +38,29 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_APIKEY);
 app.get('/test-ai', async (req, res) => {
   try {
     console.log(`[${new Date().toISOString()}] Test AI requested`);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
     const result = await model.generateContent("Say 'Hello, I am working!'");
     const response = result.response.text();
     res.json({ status: 'ok', message: response });
   } catch (error) {
     console.error("Test AI Error:", error);
     res.status(500).json({ status: 'error', message: error.message });
+  }
+});
+
+// Endpoint diagnostic pour lister les modèles disponibles
+app.get('/check-models', async (req, res) => {
+  try {
+    const apiKey = process.env.GEMINI_APIKEY;
+    if (!apiKey) return res.status(500).json({ error: 'No API Key configured' });
+    
+    // Appel direct à l'API Google pour lister les modèles
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Check Models Error:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -100,8 +116,8 @@ RÈGLES :
 
 MESSAGE DE L'UTILISATEUR : "${userMessage}"
 `;
-    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-1.5-flash-001...`);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
+    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-1.5-flash-latest...`);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
     
     console.log(`[${new Date().toISOString()}] Envoi de la requête à Gemini...`);
     const result = await model.generateContent(context);
