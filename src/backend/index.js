@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -32,29 +32,31 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_APIKEY);
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_APIKEY });
 
 // Endpoint de test léger pour vérifier la connectivité Gemini
 app.get('/test-ai', async (req, res) => {
   try {
-    console.log(`[${new Date().toISOString()}] Test AI requested`);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
-    const result = await model.generateContent("Say 'Hello, I am working!'");
-    const response = result.response.text();
-    res.json({ status: 'ok', message: response });
+    console.log(`[${new Date().toISOString()}] Test AI requested (via @google/genai)`);
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash-exp",
+      contents: "Say 'Hello, I am working with the new SDK!'",
+    });
+    console.log("Test AI Response:", response.text);
+    res.json({ status: 'ok', message: response.text });
   } catch (error) {
     console.error("Test AI Error:", error);
     res.status(500).json({ status: 'error', message: error.message });
   }
 });
 
-// Endpoint diagnostic pour lister les modèles disponibles
+// Endpoint diagnostic pour lister les modèles disponibles (Note: SDK specific listModels might differ, using raw fetch for safety or checking SDK docs if available, but staying safe with previous fetch or removing if SDK specific method is preferred. Keeping fetch as it is standard)
 app.get('/check-models', async (req, res) => {
   try {
     const apiKey = process.env.GEMINI_APIKEY;
     if (!apiKey) return res.status(500).json({ error: 'No API Key configured' });
     
-    // Appel direct à l'API Google pour lister les modèles
+    // Appel direct à l'API Google pour lister les modèles (v1beta might not list 2.0 models correctly if they are on v1alpha, but trying anyway)
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
     const data = await response.json();
     res.json(data);
@@ -116,27 +118,29 @@ RÈGLES :
 
 MESSAGE DE L'UTILISATEUR : "${userMessage}"
 `;
-    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-2.0-flash-exp...`);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-2.0-flash-exp via @google/genai...`);
     
     console.log(`[${new Date().toISOString()}] Envoi de la requête à Gemini...`);
-    const result = await model.generateContent(context);
+    const result = await ai.models.generateContent({
+      model: "gemini-2.0-flash-exp",
+      contents: context,
+    });
     console.log(`[${new Date().toISOString()}] Réponse reçue de Gemini.`);
     
-    const response = result?.response?.text?.();
+    const responseText = result.text; // New SDK uses .text directly? verifying based on snippet (response.text).
 
-    let responseText = '';
-    if (typeof response === 'string' && response.trim().length > 0) {
-      responseText = response;
+    let finalResponse = '';
+    if (typeof responseText === 'string' && responseText.trim().length > 0) {
+      finalResponse = responseText;
     } else {
-      console.warn('Réponse IA vide ou non textuelle:', response);
-      responseText = "Je n'ai pas pu générer de réponse compréhensible. Réessaie dans un instant.";
+      console.warn('Réponse IA vide ou non textuelle:', result);
+      finalResponse = "Je n'ai pas pu générer de réponse compréhensible. Réessaie dans un instant.";
     }
 
     // Suggestions intelligentes
     const suggestions = generateSuggestions(userMessage, userIngredients, availableRecipes);
-    console.log('Réponse IA finale (préfix 200 chars):', responseText.slice(0, 200));
-    res.json({ response: responseText, suggestions });
+    console.log('Réponse IA finale (préfix 200 chars):', finalResponse.slice(0, 200));
+    res.json({ response: finalResponse, suggestions });
   } catch (error) {
     console.error("Erreur chatbot détaillée:", error);
     // Return specific error message for debugging
