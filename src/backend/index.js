@@ -34,16 +34,37 @@ app.get('/health', (req, res) => {
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_APIKEY });
 
+// Helper function for retries with exponential backoff
+// Increased retries to handle long rate limits (e.g. 17s)
+const generateWithRetry = async (modelName, contents, retries = 5, initialDelay = 5000) => {
+  let delay = initialDelay;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await ai.models.generateContent({
+        model: modelName,
+        contents: contents,
+      });
+    } catch (error) {
+      const isRateLimit = error.status === 429 || error.message?.includes('429');
+      if (isRateLimit && i < retries - 1) {
+         console.warn(`[Retry ${i+1}/${retries}] Rate limit hit for ${modelName}. Retrying in ${delay}ms...`);
+         await new Promise(resolve => setTimeout(resolve, delay));
+         // Cap delay at 30s to avoid infinite wait, but exponential growth
+         delay = Math.min(delay * 2, 30000); 
+         continue;
+      }
+      throw error;
+    }
+  }
+};
+
 // Endpoint de test léger pour vérifier la connectivité Gemini
 app.get('/test-ai', async (req, res) => {
   try {
     console.log(`[${new Date().toISOString()}] Test AI requested (via @google/genai)`);
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: "Say 'Hello, I am working with the new SDK!'",
-    });
-    console.log("Test AI Response:", response.text);
-    res.json({ status: 'ok', message: response.text });
+    const result = await generateWithRetry("gemini-2.0-flash-exp", "Say 'Hello, I am working with the new SDK!'");
+    console.log("Test AI Response:", result.text);
+    res.json({ status: 'ok', message: result.text });
   } catch (error) {
     console.error("Test AI Error:", error);
     res.status(500).json({ status: 'error', message: error.message });
@@ -118,16 +139,16 @@ RÈGLES :
 
 MESSAGE DE L'UTILISATEUR : "${userMessage}"
 `;
-    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-2.0-flash-exp via @google/genai...`);
+    console.log(`[${new Date().toISOString()}] Initialisation du modèle gemini-2.0-flash-exp...`);
     
     console.log(`[${new Date().toISOString()}] Envoi de la requête à Gemini...`);
-    const result = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: context,
-    });
+
+
+
+    const result = await generateWithRetry("gemini-2.0-flash-exp", context);
     console.log(`[${new Date().toISOString()}] Réponse reçue de Gemini.`);
     
-    const responseText = result.text; // New SDK uses .text directly? verifying based on snippet (response.text).
+    const responseText = result.text; // New SDK uses .text directly
 
     let finalResponse = '';
     if (typeof responseText === 'string' && responseText.trim().length > 0) {
